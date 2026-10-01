@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GCS Work Record</title>
+<style>
+  :root {
+    --bg: #e6ebf1;
+    --ink: #1b2430;
+    --muted: #5d6b7a;
+    --line: #d5dce4;
+    --navy: #16324a;
+    --paper: #fbfaf7;
+    --card: #ffffff;
+    --soft: #f3f5f7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.45 "Segoe UI", Calibri, sans-serif;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 22px 48px; }
+  header.top {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 18px 28px;
+    align-items: end;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--navy);
+    padding: 22px 26px 18px;
+  }
+  .kicker {
+    margin: 0 0 4px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 650;
+  }
+  h1 {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 600;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    color: var(--navy);
+  }
+  .lede { margin: 8px 0 0; max-width: 640px; color: var(--muted); }
+  .tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; justify-content: flex-end; }
+  label.who { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
+  label.who input {
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    font: inherit;
+    padding: 8px 10px;
+    min-width: 180px;
+  }
+  button {
+    border: 1px solid var(--navy);
+    background: var(--navy);
+    color: #fff;
+    font: inherit;
+    padding: 8px 14px;
+    cursor: pointer;
+  }
+  button.ghost { background: #fff; color: var(--navy); }
+  button:disabled { opacity: .6; cursor: wait; }
+  .status { margin: 8px 0 0; font-size: 12px; color: var(--muted); text-align: right; }
+  .projects {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .project {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--c);
+    padding: 12px 12px 10px;
+  }
+  .project h2 { margin: 0; font-size: 14px; font-weight: 650; }
+  .live { margin: 4px 0 0; font-size: 12px; color: var(--muted); }
+  .count { margin: 8px 0 0; font-size: 12px; color: var(--navy); font-weight: 650; }
+  .board {
+    display: grid;
+    grid-template-columns: 1.35fr .8fr;
+    gap: 14px;
+    margin-top: 14px;
+    align-items: start;
+  }
+  .panel { background: var(--card); border: 1px solid var(--line); padding: 16px 16px 18px; }
+  .monthbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .monthbar h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 22px; font-weight: 600; color: var(--navy); }
+  .nav { display: flex; gap: 8px; }
+  .nav button { padding: 6px 10px; }
+  .summary { margin: 0 0 12px; color: var(--muted); font-size: 13px; }
+  .week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+  .dow {
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 4px 4px;
+  }
+  .day {
+    min-height: 92px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    padding: 6px 7px 8px;
+    text-align: left;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    font: inherit;
+    width: 100%;
+    appearance: none;
+  }
+  .day.off { background: #eef1f4; color: #8b97a3; cursor: default; }
+  .day.empty { visibility: hidden; }
+  .day.on { background: #fff; }
+  .day.selected { outline: 2px solid var(--navy); outline-offset: -2px; }
+  .day.today .num { box-shadow: inset 0 -2px 0 var(--navy); }
+  .num { font-weight: 700; font-size: 14px; }
+  .dots { display: flex; gap: 4px; margin-top: auto; flex-wrap: wrap; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .detail h2 { margin: 0 0 4px; font-family: Georgia, "Times New Roman", serif; font-size: 22px; color: var(--navy); font-weight: 600; }
+  .detail .when { margin: 0 0 14px; color: var(--muted); font-size: 13px; }
+  .block { border-top: 1px solid var(--line); padding: 12px 0 4px; }
+  .block h3 { margin: 0 0 6px; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--c); }
+  .block ul { margin: 0; padding-left: 18px; }
+  .block li { margin: 0 0 6px; }
+  .earlier { margin: 0 0 8px; color: var(--muted); font-size: 13px; }
+  .quiet { color: var(--muted); }
+  footer.note { margin-top: 16px; color: var(--muted); font-size: 12px; }
+  .print-only { display: none; }
+  @media (max-width: 980px) {
+    .projects { grid-template-columns: 1fr 1fr; }
+    .board { grid-template-columns: 1fr; }
+    header.top { grid-template-columns: 1fr; }
+    .tools, .status { justify-content: flex-start; text-align: left; }
+  }
+  @media print {
+    body { background: #fff; }
+    .wrap { max-width: none; padding: 0; }
+    .tools, .nav, .status, button, footer.note { display: none !important; }
+    .projects { grid-template-columns: repeat(5, 1fr); }
+    .board { display: block; }
+    .day { min-height: 64px; break-inside: avoid; }
+    .print-only { display: block; margin-top: 18px; }
+    .print-only article { break-inside: avoid; margin: 0 0 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="kicker">GCS Technology Solutions</p>
+      <h1>Work record</h1>
+      <p class="lede">Custom floor software. These apps are live and get refined on work days. They are not one-time projects.</p>
+    </div>
+    <div>
+      <div class="tools">
+        <label class="who">Prepared by
+          <input id="owner" type="text" autocomplete="name">
+        </label>
+        <button type="button" id="refresh">Refresh</button>
+        <button type="button" class="ghost" id="print">Print</button>
+      </div>
+      <p class="status" id="status"></p>
+    </div>
+  </header>
+
+  <section class="projects" id="projects"></section>
+
+  <div class="board">
+    <section class="panel">
+      <div class="monthbar">
+        <h2 id="monthLabel"></h2>
+        <div class="nav">
+          <button type="button" class="ghost" id="prev">Previous</button>
+          <button type="button" class="ghost" id="next">Next</button>
+        </div>
+      </div>
+      <p class="summary" id="summary"></p>
+      <div class="week" id="dows"></div>
+      <div class="week" id="grid"></div>
+    </section>
+    <aside class="panel detail" id="detail"></aside>
+  </div>
+
+  <div class="print-only" id="printList"></div>
+  <footer class="note">Weekdays only, 7:00 AM to 4:00 PM. Phone notes are not part of this record. <span id="localHint" hidden>Open GCS Work Report on this PC to refresh.</span></footer>
+</div>
+<script src="work-log.js"></script>
+<script>
+(function () {
+  var PROJECTS = [
+    { id: 'receiving', name: 'GCS Receiving', color: '#1f7a4d' },
+    { id: 'repair', name: 'GCS Repair', color: '#b45309' },
+    { id: 'tech', name: 'GCS Tech', color: '#1d4e89' },
+    { id: 'order', name: 'GCS Order ID', color: '#8a5a12' },
+    { id: 'clean', name: 'GCS Clean', color: '#0f6f8a' }
+  ];
+  var DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  var byId = {};
+  PROJECTS.forEach(function (p) { byId[p.id] = p; });
+
+  var view = new Date();
+  var selected = null;
+  var log = window.WORK_LOG || { days: [], owner: '', generatedAt: '', shift: '' };
+  var dayMap = {};
+
+  function pad(n) { return n < 10 ? '0' + n : String(n); }
+  function keyOf(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function parseKey(key) {
+    var p = key.split('-');
+    return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+  }
+  function monthName(d) {
+    return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  }
+  function longDate(key) {
+    return parseKey(key).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  }
+
+  function indexLog() {
+    dayMap = {};
+    (log.days || []).forEach(function (day) { dayMap[day.date] = day; });
+  }
+
+  function daysInMonth(year, month) { return new Date(year, month + 1, 0).getDate(); }
+  function mondayIndex(date) {
+    var day = date.getDay();
+    return day === 0 ? 6 : day - 1;
+  }
+
+  function monthKeys() {
+    var y = view.getFullYear();
+    var m = view.getMonth();
+    var keys = [];
+    var n = daysInMonth(y, m);
+    for (var i = 1; i <= n; i++) keys.push(keyOf(new Date(y, m, i)));
+    return keys;
+  }
+
+  function renderProjects() {
+    var keys = monthKeys();
+    var box = document.getElementById('projects');
+    box.innerHTML = '';
+    PROJECTS.forEach(function (p) {
+      var n = 0;
+      keys.forEach(function (k) {
+        var day = dayMap[k];
+        if (!day) return;
+        day.entries.forEach(function (e) { if (e.project === p.id) n += 1; });
+      });
+      var card = document.createElement('article');
+      card.className = 'project';
+      card.style.setProperty('--c', p.color);
+      card.innerHTML = '<h2>' + p.name + '</h2><p class="live">Live — daily refinement</p><p class="count">' +
+        (n ? n + (n === 1 ? ' work day' : ' work days') + ' this month' : 'No shift entries this month') + '</p>';
+      box.appendChild(card);
+    });
+  }
+
+  function renderCalendar() {
+    document.getElementById('monthLabel').textContent = monthName(view);
+    var dows = document.getElementById('dows');
+    dows.innerHTML = '';
+    DOW.forEach(function (name) {
+      var el = document.createElement('div');
+      el.className = 'dow';
+      el.textContent = name;
+      dows.appendChild(el);
+    });
+
+    var grid = document.getElementById('grid');
+    grid.innerHTML = '';
+    var y = view.getFullYear();
+    var m = view.getMonth();
+    var first = new Date(y, m, 1);
+    var lead = mondayIndex(first);
+    var total = daysInMonth(y, m);
+    var todayKey = keyOf(new Date());
+    var workDays = 0;
+
+    for (var i = 0; i < lead; i++) {
+      var blank = document.createElement('div');
+      blank.className = 'day empty';
+      grid.appendChild(blank);
+    }
+    for (var d = 1; d <= total; d++) {
+      var date = new Date(y, m, d);
+      var key = keyOf(date);
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'day';
+      var dow = date.getDay();
+      var off = dow === 0 || dow === 6;
+      if (off) btn.className += ' off';
+      if (key === todayKey) btn.className += ' today';
+      if (key === selected) btn.className += ' selected';
+      var day = dayMap[key];
+      if (day) {
+        btn.className += ' on';
+        workDays += 1;
+      }
+      var dots = '';
+      if (day) {
+        day.entries.forEach(function (e) {
+          var p = byId[e.project];
+          if (p) dots += '<span class="dot" style="background:' + p.color + '"></span>';
+        });
+      }
+      btn.innerHTML = '<span class="num">' + d + '</span>' + (off && !day ? '<span class="quiet">Off</span>' : '') + '<span class="dots">' + dots + '</span>';
+      btn.disabled = off && !day;
+      (function (k, isOff) {
+        btn.addEventListener('click', function () {
+          if (isOff && !dayMap[k]) return;
+          selected = k;
+          render();
+        });
+      })(key, off);
+      grid.appendChild(btn);
+    }
+
+    var bits = workDays ? workDays + (workDays === 1 ? ' work day' : ' work days') : 'No work days';
+    document.getElementById('summary').textContent = bits + ' in this month, Monday to Friday, 7:00 AM to 4:00 PM.';
+    renderPrint(monthKeys());
+  }
+
+  function renderDetail() {
+    var box = document.getElementById('detail');
+    if (!selected || !dayMap[selected]) {
+      box.innerHTML = '<h2>Select a day</h2><p class="when">Work days show a color dot for each app that was refined.</p>';
+      return;
+    }
+    var day = dayMap[selected];
+    var html = '<h2>' + longDate(selected) + '</h2><p class="when">Floor work recorded in the shift.</p>';
+    day.entries.forEach(function (e) {
+      var p = byId[e.project] || { name: e.project, color: '#333' };
+      html += '<div class="block" style="--c:' + p.color + '"><h3>' + p.name + '</h3><ul>';
+      (e.lines || []).forEach(function (line) {
+        html += '<li>' + escapeHtml(line) + '</li>';
+      });
+      html += '</ul>';
+      if (e.earlier) html += '<p class="earlier">Earlier the same day: ' + e.earlier + ' more adjustment' + (e.earlier === 1 ? '' : 's') + '.</p>';
+      html += '</div>';
+    });
+    box.innerHTML = html;
+  }
+
+  function renderPrint(keys) {
+    var box = document.getElementById('printList');
+    var html = '';
+    keys.forEach(function (k) {
+      var day = dayMap[k];
+      if (!day) return;
+      html += '<article><h3>' + longDate(k) + '</h3>';
+      day.entries.forEach(function (e) {
+        var p = byId[e.project];
+        html += '<p><strong>' + (p ? p.name : e.project) + '</strong></p><ul>';
+        (e.lines || []).forEach(function (line) { html += '<li>' + escapeHtml(line) + '</li>'; });
+        html += '</ul>';
+      });
+      html += '</article>';
+    });
+    box.innerHTML = html;
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  function renderStatus() {
+    var when = log.generatedAt ? new Date(log.generatedAt) : null;
+    var text = when && !isNaN(when.getTime())
+      ? 'Updated ' + when.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+      : '';
+    document.getElementById('status').textContent = text;
+  }
+
+  function render() {
+    renderProjects();
+    renderCalendar();
+    renderDetail();
+    renderStatus();
+  }
+
+  function pickInitial() {
+    var today = keyOf(new Date());
+    if (dayMap[today]) {
+      selected = today;
+      var t = parseKey(today);
+      view = new Date(t.getFullYear(), t.getMonth(), 1);
+      return;
+    }
+    var keys = Object.keys(dayMap).sort();
+    if (!keys.length) return;
+    selected = keys[keys.length - 1];
+    var last = parseKey(selected);
+    view = new Date(last.getFullYear(), last.getMonth(), 1);
+  }
+
+  document.getElementById('prev').addEventListener('click', function () {
+    view = new Date(view.getFullYear(), view.getMonth() - 1, 1);
+    render();
+  });
+  document.getElementById('next').addEventListener('click', function () {
+    view = new Date(view.getFullYear(), view.getMonth() + 1, 1);
+    render();
+  });
+  document.getElementById('print').addEventListener('click', function () { window.print(); });
+
+  var owner = document.getElementById('owner');
+  owner.value = localStorage.getItem('gcs-work-report-name') || log.owner || '';
+  owner.addEventListener('change', function () {
+    localStorage.setItem('gcs-work-report-name', owner.value.trim());
+  });
+
+  document.getElementById('refresh').addEventListener('click', function () {
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Updating…';
+    fetch('/refresh', { method: 'POST' }).then(function (res) {
+      if (!res.ok) throw new Error('fail');
+      return new Promise(function (resolve, reject) {
+        var s = document.createElement('script');
+        s.src = 'work-log.js?t=' + Date.now();
+        s.onload = function () { resolve(); };
+        s.onerror = reject;
+        document.body.appendChild(s);
+      });
+    }).then(function () {
+      log = window.WORK_LOG || log;
+      indexLog();
+      render();
+      btn.textContent = 'Updated';
+    }).catch(function () {
+      document.getElementById('status').textContent = 'Double-click GCS Work Report to update.';
+      btn.textContent = 'Refresh';
+    }).then(function () {
+      btn.disabled = false;
+      setTimeout(function () { btn.textContent = 'Refresh'; }, 1200);
+    });
+  });
+
+  var onThisPc = location.hostname === '127.0.0.1' || location.hostname === 'localhost' || location.protocol === 'file:';
+  if (!onThisPc) document.getElementById('refresh').hidden = true;
+  else document.getElementById('localHint').hidden = false;
+
+  indexLog();
+  pickInitial();
+  render();
+})();
+</script>
+</body>
+</html>
