@@ -77,6 +77,15 @@
     gap: 10px;
     margin-top: 14px;
   }
+  .group-label {
+    margin: 16px 0 0;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 650;
+  }
+  .projects.future { grid-template-columns: repeat(3, 1fr); margin-top: 8px; }
   .project {
     background: var(--card);
     border: 1px solid var(--line);
@@ -180,6 +189,8 @@
   </header>
 
   <section class="projects" id="projects"></section>
+  <p class="group-label">Future projects</p>
+  <section class="projects future" id="future"></section>
 
   <div class="board">
     <section class="panel">
@@ -209,6 +220,11 @@
     { id: 'tech', name: 'GCS Tech', color: '#1d4e89' },
     { id: 'order', name: 'GCS Order ID', color: '#8a5a12' },
     { id: 'clean', name: 'GCS Clean', color: '#0f6f8a' }
+  ];
+  var FUTURE = [
+    { name: 'GCS Shipment', color: '#5c6b7a' },
+    { name: 'GCS Initial Receiving', color: '#6d7d72' },
+    { name: 'GCS RMA', color: '#8a6f66' }
   ];
   var DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   var byId = {};
@@ -261,6 +277,15 @@
       card.style.setProperty('--c', p.color);
       card.innerHTML = '<h2>' + p.name + '</h2><p class="live">Live — daily refinement</p>';
       box.appendChild(card);
+    });
+    var future = document.getElementById('future');
+    future.innerHTML = '';
+    FUTURE.forEach(function (p) {
+      var card = document.createElement('article');
+      card.className = 'project';
+      card.style.setProperty('--c', p.color);
+      card.innerHTML = '<h2>' + p.name + '</h2><p class="live">Future</p>';
+      future.appendChild(card);
     });
   }
 
