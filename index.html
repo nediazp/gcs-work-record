@@ -85,7 +85,6 @@
   }
   .project h2 { margin: 0; font-size: 14px; font-weight: 650; }
   .live { margin: 4px 0 0; font-size: 12px; color: var(--muted); }
-  .count { margin: 8px 0 0; font-size: 12px; color: var(--navy); font-weight: 650; }
   .board {
     display: grid;
     grid-template-columns: 1.35fr .8fr;
@@ -254,21 +253,13 @@
   }
 
   function renderProjects() {
-    var keys = monthKeys();
     var box = document.getElementById('projects');
     box.innerHTML = '';
     PROJECTS.forEach(function (p) {
-      var n = 0;
-      keys.forEach(function (k) {
-        var day = dayMap[k];
-        if (!day) return;
-        day.entries.forEach(function (e) { if (e.project === p.id) n += 1; });
-      });
       var card = document.createElement('article');
       card.className = 'project';
       card.style.setProperty('--c', p.color);
-      card.innerHTML = '<h2>' + p.name + '</h2><p class="live">Live — daily refinement</p><p class="count">' +
-        (n ? n + (n === 1 ? ' work day' : ' work days') + ' this month' : 'No shift entries this month') + '</p>';
+      card.innerHTML = '<h2>' + p.name + '</h2><p class="live">Live — daily refinement</p>';
       box.appendChild(card);
     });
   }
