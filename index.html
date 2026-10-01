@@ -73,7 +73,7 @@
   .status { margin: 8px 0 0; font-size: 12px; color: var(--muted); text-align: right; }
   .projects {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 10px;
     margin-top: 14px;
   }
@@ -153,7 +153,7 @@
     body { background: #fff; }
     .wrap { max-width: none; padding: 0; }
     .tools, .nav, .status, button, footer.note { display: none !important; }
-    .projects { grid-template-columns: repeat(5, 1fr); }
+    .projects { grid-template-columns: repeat(3, 1fr); }
     .board { display: block; }
     .day { min-height: 64px; break-inside: avoid; }
     .print-only { display: block; margin-top: 18px; }
@@ -207,6 +207,7 @@
 (function () {
   var PROJECTS = [
     { id: 'receiving', name: 'GCS Receiving', color: '#1f7a4d' },
+    { id: 'r2', name: 'GCS R2v3', color: '#3e4a86' },
     { id: 'repair', name: 'GCS Repair', color: '#b45309' },
     { id: 'tech', name: 'GCS Tech', color: '#1d4e89' },
     { id: 'order', name: 'GCS Order ID', color: '#8a5a12' },
