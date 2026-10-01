@@ -94,6 +94,7 @@
   }
   .project h2 { margin: 0; font-size: 14px; font-weight: 650; }
   .live { margin: 4px 0 0; font-size: 12px; color: var(--muted); }
+  .blurb { margin: 8px 0 0; font-size: 13px; line-height: 1.4; color: var(--ink); }
   .board {
     display: grid;
     grid-template-columns: 1.35fr .8fr;
@@ -222,9 +223,9 @@
     { id: 'clean', name: 'GCS Clean', color: '#0f6f8a' }
   ];
   var FUTURE = [
-    { name: 'GCS Shipment', color: '#5c6b7a' },
-    { name: 'GCS Initial Receiving', color: '#6d7d72' },
-    { name: 'GCS RMA', color: '#8a6f66' }
+    { name: 'GCS Shipment', color: '#5c6b7a', text: 'Automate shipping from start to check. Every shipment is verified before it goes out.' },
+    { name: 'GCS Initial Receiving', color: '#6d7d72', text: 'Make the first intake simpler. Connect it directly to GCS Receiving.' },
+    { name: 'GCS RMA', color: '#8a6f66', text: 'Track every return in one place. Automate the path from request to close.' }
   ];
   var DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   var byId = {};
@@ -284,7 +285,7 @@
       var card = document.createElement('article');
       card.className = 'project';
       card.style.setProperty('--c', p.color);
-      card.innerHTML = '<h2>' + p.name + '</h2><p class="live">Future</p>';
+      card.innerHTML = '<h2>' + p.name + '</h2><p class="live">Future</p><p class="blurb">' + p.text + '</p>';
       future.appendChild(card);
     });
   }
