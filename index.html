@@ -98,7 +98,6 @@
   .monthbar h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 22px; font-weight: 600; color: var(--navy); }
   .nav { display: flex; gap: 8px; }
   .nav button { padding: 6px 10px; }
-  .summary { margin: 0 0 12px; color: var(--muted); font-size: 13px; }
   .week {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -192,7 +191,6 @@
           <button type="button" class="ghost" id="next">Next</button>
         </div>
       </div>
-      <p class="summary" id="summary"></p>
       <div class="week" id="dows"></div>
       <div class="week" id="grid"></div>
     </section>
@@ -294,7 +292,6 @@
     var lead = mondayIndex(first);
     var total = daysInMonth(y, m);
     var todayKey = keyOf(new Date());
-    var workDays = 0;
 
     for (var i = 0; i < lead; i++) {
       var blank = document.createElement('div');
@@ -313,10 +310,7 @@
       if (key === todayKey) btn.className += ' today';
       if (key === selected) btn.className += ' selected';
       var day = dayMap[key];
-      if (day) {
-        btn.className += ' on';
-        workDays += 1;
-      }
+      if (day) btn.className += ' on';
       var dots = '';
       if (day) {
         day.entries.forEach(function (e) {
@@ -336,8 +330,6 @@
       grid.appendChild(btn);
     }
 
-    var bits = workDays ? workDays + (workDays === 1 ? ' work day' : ' work days') : 'No work days';
-    document.getElementById('summary').textContent = bits + ' in this month, Monday to Friday, 7:00 AM to 4:00 PM.';
     renderPrint(monthKeys());
   }
 
