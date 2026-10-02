@@ -85,7 +85,7 @@
     color: var(--muted);
     font-weight: 650;
   }
-  .projects.future { grid-template-columns: repeat(3, 1fr); margin-top: 8px; }
+  .projects.future { grid-template-columns: repeat(4, 1fr); margin-top: 8px; }
   .project {
     background: var(--card);
     border: 1px solid var(--line);
@@ -223,9 +223,10 @@
     { id: 'clean', name: 'GCS Clean', color: '#0f6f8a' }
   ];
   var FUTURE = [
-    { name: 'GCS Shipment', color: '#5c6b7a', text: 'Automate shipping from start to check. Every shipment is verified before it goes out.' },
-    { name: 'GCS Initial Receiving', color: '#6d7d72', text: 'Make the first intake simpler. Connect it directly to GCS Receiving.' },
-    { name: 'GCS RMA', color: '#8a6f66', text: 'Track every return in one place. Automate the path from request to close.' }
+    { name: 'GCS Shipment', color: '#5c6b7a', text: 'Verify every shipment before it leaves.' },
+    { name: 'GCS Initial Receiving', color: '#6d7d72', text: 'Simpler first intake, linked to GCS Receiving.' },
+    { name: 'GCS RMA', color: '#8a6f66', text: 'Track each return from request to close.' },
+    { name: 'Owner App', color: '#3f5f78', text: 'Faster, safer iPhone and iPad tests, lower cost.' }
   ];
   var DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   var byId = {};
@@ -285,7 +286,7 @@
       var card = document.createElement('article');
       card.className = 'project';
       card.style.setProperty('--c', p.color);
-      card.innerHTML = '<h2>' + p.name + '</h2><p class="live">Future</p><p class="blurb">' + p.text + '</p>';
+      card.innerHTML = '<h2>' + p.name + '</h2><p class="live">' + p.text + '</p>';
       future.appendChild(card);
     });
   }
