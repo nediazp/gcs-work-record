@@ -73,7 +73,7 @@
   .status { margin: 8px 0 0; font-size: 12px; color: var(--muted); text-align: right; }
   .projects {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(7, 1fr);
     gap: 10px;
     margin-top: 14px;
   }
@@ -211,7 +211,7 @@
   <div class="print-only" id="printList"></div>
   <footer class="note">Weekdays only, 7:00 AM to 4:00 PM. Phone notes are not part of this record. <span id="localHint" hidden>Open GCS Work Report on this PC to refresh.</span></footer>
 </div>
-<script src="work-log.js?v=20261016"></script>
+<script src="work-log.js?v=20261021"></script>
 <script>
 (function () {
   var PROJECTS = [
@@ -220,10 +220,10 @@
     { id: 'repair', name: 'GCS Repair', color: '#b45309' },
     { id: 'tech', name: 'GCS Tech', color: '#1d4e89' },
     { id: 'order', name: 'GCS Order ID', color: '#8a5a12' },
-    { id: 'clean', name: 'GCS Clean', color: '#0f6f8a' }
+    { id: 'clean', name: 'GCS Clean', color: '#0f6f8a' },
+    { id: 'shipment', name: 'GCS Shipment', color: '#5c6b7a' }
   ];
   var FUTURE = [
-    { name: 'GCS Shipment', color: '#5c6b7a', text: 'Verify every shipment before it leaves.' },
     { name: 'GCS Initial Receiving', color: '#6d7d72', text: 'Simpler first intake, linked to GCS Receiving.' },
     { name: 'GCS RMA', color: '#8a6f66', text: 'Track each return from request to close.' },
     { name: 'Owner App', color: '#3f5f78', text: 'Faster, safer iPhone and iPad tests, lower cost.' },
